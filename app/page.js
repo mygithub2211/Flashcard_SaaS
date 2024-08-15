@@ -15,7 +15,10 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 
+export const maxDuration = 60 // This function can run for a maximum of 60 seconds
+
 export default function Home() {
+  
   const router = useRouter();
 
   const handleCheckout = async (plan) => {
