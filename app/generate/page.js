@@ -14,7 +14,7 @@ import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 
 
-export const maxDuration = 60 // This function can run for a maximum of 60 seconds
+
 
 // Custom arrow components
 function PrevArrow(props) {

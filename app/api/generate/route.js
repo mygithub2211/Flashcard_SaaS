@@ -23,7 +23,7 @@ Return in the following JSON format
     ]
 }
 `
-
+export const maxDuration = 60 // This function can run for a maximum of 60 seconds
 export async function POST(req) {
     const openai = new OpenAI()
     const data = await req.text()
