@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+
+/* FINAL PRODUCT */
 export default function Home() {
   
   const router = useRouter();
@@ -158,7 +160,12 @@ export default function Home() {
             mx: 2 ,
             borderRadius: 3,
             borderColor: "#000", // Set border color to black
-            color:"#000"
+            color:"#000",
+            '&:hover': {
+              borderColor: "#000", // Ensure the border color remains black on hover
+              background: "#f0f0f0", // Ensure the background color remains transparent on hover
+              color: "#000", // Ensure the text color remains black on hover
+            }
           }}
           onClick={handleCollections}
           size="large"
