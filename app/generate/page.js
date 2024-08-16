@@ -1,6 +1,6 @@
 "use client"
-import { useUser } from "@clerk/nextjs"
-import { Box, Button, Card, CardActionArea, CardContent, Container } from "@mui/material"
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs"
+import { Box, Button, Card, CardActionArea, CardContent, Container, Divider, Toolbar } from "@mui/material"
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 import { Paper, TextField, Typography } from "@mui/material"
 import { useRouter } from "next/navigation"
@@ -10,8 +10,9 @@ import { collection, doc, getDoc, writeBatch } from "firebase/firestore"
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
-import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
-import ArrowRightIcon from '@mui/icons-material/ArrowRight'
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft"
+import ArrowRightIcon from "@mui/icons-material/ArrowRight"
+import Link from "next/link"
 
 
 
@@ -23,11 +24,11 @@ function PrevArrow(props) {
         <Box
             onClick={onClick}
             sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '-30px',
-                transform: 'translateY(-50%)',
-                cursor: 'pointer',
+                position: "absolute",
+                top: "50%",
+                left: "-30px",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
                 zIndex: 1,
             }}
         >
@@ -42,11 +43,11 @@ function NextArrow(props) {
         <Box
             onClick={onClick}
             sx={{
-                position: 'absolute',
-                top: '50%',
-                right: '-30px',
-                transform: 'translateY(-50%)',
-                cursor: 'pointer',
+                position: "absolute",
+                top: "50%",
+                right: "-30px",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
                 zIndex: 1,
             }}
         >
@@ -140,129 +141,286 @@ export default function Generate() {
     }
 
     return(
-        <Container maxWidth="md">
-            <Box
-                sx={{
-                    mt:4,
-                    mb:6,
-                    display:"flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                }}
-            >
-                <Typography variant="h4">Generate Flashcards</Typography>
-                <Paper sx={{p:4, width: "100%"}}>
-                    <TextField 
-                        value={text} 
-                        onChange={(e) => setText(e.target.value)} 
-                        label="Enter text" 
-                        fullWidth
-                        multiline
-                        rows={4}
+        <>
+            {/* HEADER */}
+            <Container maxWidth="lg">      
+                <Toolbar sx={{ justifyContent: "space-between" }}>
+                <Typography variant="h6" sx={{fontWeight: "bold", cursor: "pointer" }}>
+                    <Link href="../" style={{ textDecoration: "none", color: "inherit" }}> FlashCards</Link>
+                </Typography>
+                <Box>
+                    <SignedOut>
+                        <Button
                         variant="outlined"
-                        sx={{
-                            mb: 2
-                        }}
-                    />
-                    <Button
-                        variant="contained" 
-                        color="primary"
-                        onClick={handleSubmit}
-                        fullWidth
-                    >
-                        Submit
-                    </Button>
-                </Paper>
-            </Box>
-            {/* GENERATE FLASHCARDS */}
-            {flashcards.length > 0 && (
-                <Box sx={{mt: 4}}>
-                    <Typography variant="h5">Flashcards Preview</Typography>
-                    <Slider {...settings}>
-                        {flashcards.map((flashcard, index) => (
-                            <Box key={index} px={2}>
-                                <Card>
-                                    <CardActionArea 
-                                        onClick={() => handleCardClick(index)}
-                                    >
-                                        <CardContent>
-                                            <Box
-                                                sx={{
-                                                    perspective: "1000px",
-                                                    "& > div": {
-                                                        transition: "transform 0.6s",
-                                                        transformStyle: "preserve-3d",
-                                                        position:"relative",
-                                                        width: "100%",
-                                                        height: "200px",
-                                                        boxShadow: "0 4px 8px 0 rgba(0,0,0, 0.2)",
-                                                        transform: flipped[index]
-                                                            ? "rotateY(180deg)" 
-                                                            : "rotateY(0deg)"
-                                                    },
-                                                    "& > div > div": {             
-                                                        position:"absolute",
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        backfaceVisibility: "hidden",
-                                                        display: "flex",
-                                                        justifyContent: "center",
-                                                        alignItems: "center",
-                                                        padding: 2,
-                                                        boxSizing: "border-box"
-                                                    },
-                                                    "& > div > div:nth-of-type(2)":{
-                                                        transform: "rotateY(180deg)"
-                                                    }  
-                                                }}
-                                            >
-                                                <div>
-                                                    <div>
-                                                        <Typography varian="h5" component="div">
-                                                            {flashcard.front}
-                                                        </Typography>
-                                                    </div>
-                                                    <div>
-                                                        <Typography varian="h5" component="div">
-                                                            {flashcard.back}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </Box>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            </Box>
-                        ))}
-                    </Slider>
-                    <Box sx={{mt: 4, display:"flex", justifyContent: "center", gap: 2}}>
-                        <Button variant="contained" color="secondary" onClick={handleOpen}>Save</Button>
-                        <Button variant="contained" color="secondary" href="../">Cancel</Button>
-                    </Box>
+                        color="inherit"
+                        href="/sign-in"
+                        sx={{ mx: 1, borderRadius: 3 }}
+                        >
+                        Sign In
+                        </Button>
+                    </SignedOut>
+                    <SignedIn>
+                        <UserButton />
+                    </SignedIn>
                 </Box>
-            )}
+                </Toolbar>
+                <Divider/>
+            </Container>
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Save Flashcards</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Please enter a name for your flashcards collection
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Collection Name"
-                        fullWidth
-                        value={name}
-                        variant="outlined"
-                        onChange={(e) => setName(e.target.value)}
-                    />  
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={saveFlashcards}>Save</Button>
-                    <Button onClick={handleClose}>Cancel</Button>
-                </DialogActions>
-            </Dialog>
-        </Container>
+            {/* GENERATE BOX */}
+            <Container maxWidth="md">
+                
+                <Box
+                    sx={{
+                        mt:4,
+                        mb:6,
+                        display:"flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+                    }}
+                >
+                    <Typography variant="h4">Generate Flashcards</Typography>
+                    <Paper sx={{p:4, width: "100%"}}>
+                        <TextField 
+                            value={text} 
+                            onChange={(e) => setText(e.target.value)} 
+                            label="Enter your topic" 
+                            fullWidth
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                            sx={{
+                                mb: 2,
+                                "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                    borderColor: "#ccc", // Default border color
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: "#000", // Border color when hovered
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "#000", // Border color when focused
+                                },
+                                },
+                                "& .MuiInputLabel-root": {
+                                color: "#000", // Label color
+                                "&.Mui-focused": {
+                                    color: "#000", // Label color when focused
+                                },
+                                },
+                                "& .MuiInputLabel-shrink": {
+                                top: -8, // Adjust label position when floating
+                                left: 0,
+                                color: "#000", // Label color when floating
+                                },
+                            }}
+                            /*InputLabelProps={{  //responsible for position of "Enter topic"
+                                shrink: true,  //Ensures label is always in the floating position
+                            }}*/
+                        />
+
+                        <Button
+                            variant="contained" 
+                            sx={{                             
+                                background: "#000",
+                                borderColor: "#000",
+                                color: "#fff",
+                                borderRadius: 3,
+                                textTransform: 'none', // Prevents automatic capitalization
+                                "&:hover": {
+                                borderColor: "#000",
+                                background: "#333333" // Darker shade on hover
+                                }
+                            }}
+                            onClick={handleSubmit}
+                            fullWidth
+                        >
+                            Generate
+                        </Button>
+                    </Paper>
+                </Box>
+
+
+                {/* GENERATE FLASHCARDS */}
+                {flashcards.length > 0 && (
+                    <Box sx={{mt: 4}}>
+                        <Typography variant="h5">Flashcards Preview</Typography>
+                        <Slider {...settings}>
+                            {flashcards.map((flashcard, index) => (
+                                <Box key={index} px={2}>
+                                    <Card>
+                                        <CardActionArea 
+                                            onClick={() => handleCardClick(index)}
+                                        >
+                                            <CardContent>
+                                                <Box
+                                                    sx={{
+                                                        perspective: "1000px",
+                                                        "& > div": {
+                                                            transition: "transform 0.6s",
+                                                            transformStyle: "preserve-3d",
+                                                            position:"relative",
+                                                            width: "100%",
+                                                            height: "200px",
+                                                            boxShadow: "0 4px 8px 0 rgba(0,0,0, 0.2)",
+                                                            transform: flipped[index]
+                                                                ? "rotateY(180deg)" 
+                                                                : "rotateY(0deg)"
+                                                        },
+                                                        "& > div > div": {             
+                                                            position:"absolute",
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            backfaceVisibility: "hidden",
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            padding: 2,
+                                                            boxSizing: "border-box"
+                                                        },
+                                                        "& > div > div:nth-of-type(2)":{
+                                                            transform: "rotateY(180deg)"
+                                                        }  
+                                                    }}
+                                                >
+                                                    <div>
+                                                        <div>
+                                                            <Typography varian="h5" component="div">
+                                                                {flashcard.front}
+                                                            </Typography>
+                                                        </div>
+                                                        <div>
+                                                            <Typography varian="h5" component="div">
+                                                                {flashcard.back}
+                                                            </Typography>
+                                                        </div>
+                                                    </div>
+                                                </Box>
+                                            </CardContent>
+                                        </CardActionArea>
+                                    </Card>
+                                </Box>
+                            ))}
+                        </Slider>
+                        <Box sx={{mt: 4, display:"flex", justifyContent: "center", gap: 2}}>
+                            <Button   
+                                variant="contained" 
+                                sx={{                             
+                                    background: "#000",
+                                    borderColor: "#000",
+                                    color: "#fff",
+                                    borderRadius: 3,
+                                    textTransform: 'none', // Prevents automatic capitalization
+                                    "&:hover": {
+                                    borderColor: "#000",
+                                    background: "#333333" // Darker shade on hover
+                                    }
+                                }}
+                                onClick={handleOpen}
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                variant="contained" 
+                                sx={{                             
+                                    background: "#000",
+                                    borderColor: "#000",
+                                    color: "#fff",
+                                    borderRadius: 3,
+                                    textTransform: 'none', // Prevents automatic capitalization
+                                    "&:hover": {
+                                    borderColor: "#000",
+                                    background: "#333333" // Darker shade on hover
+                                    }
+                                }}
+                                href="../"
+                            >
+                                Cancel
+                            </Button>
+                        </Box>
+                    </Box>
+                )}
+
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Save Flashcards</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Please enter a name for your flashcards collection
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Collection Name"
+                            fullWidth
+                            value={name}
+                            variant="outlined"
+                            sx={{
+                                mt: 3,
+                                "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                    borderColor: "#ccc", // Default border color
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: "#000", // Border color when hovered
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "#000", // Border color when focused
+                                },
+                                },
+                                "& .MuiInputLabel-root": {
+                                color: "#000", // Label color
+                                "&.Mui-focused": {
+                                    color: "#000", // Label color when focused
+                                },
+                                },
+                                "& .MuiInputLabel-shrink": {
+                                top: -8, // Adjust label position when floating
+                                left: 0,
+                                color: "#000", // Label color when floating
+                                }
+                            }}
+                            onChange={(e) => setName(e.target.value)}
+                        />  
+                    </DialogContent>
+                    <DialogActions>
+                        <Button 
+                            variant="contained" 
+                            sx={{                             
+                                background: "#000",
+                                borderColor: "#000",
+                                color: "#fff",
+                                borderRadius: 3,
+                                textTransform: 'none', // Prevents automatic capitalization
+                                "&:hover": {
+                                borderColor: "#000",
+                                background: "#333333" // Darker shade on hover
+                                }
+                            }}
+                            onClick={saveFlashcards}
+                        >
+                            Save
+                        </Button>
+
+                        <Button 
+                            variant="contained" 
+                            sx={{                             
+                                background: "#000",
+                                borderColor: "#000",
+                                color: "#fff",
+                                borderRadius: 3,
+                                textTransform: 'none', // Prevents automatic capitalization
+                                "&:hover": {
+                                borderColor: "#000",
+                                background: "#333333" // Darker shade on hover
+                                }
+                            }}
+                            onClick={handleClose}
+                        >
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Container>
+        </>
     )
 }

@@ -3,7 +3,6 @@ import Image from "next/image";
 import getStripe from "@/utils/get-stripe";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import {
-  AppBar,
   Box,
   Button,
   Container,
@@ -11,11 +10,15 @@ import {
   Toolbar,
   Typography,
   Paper,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-
-export const maxDuration = 60 // This function can run for a maximum of 60 seconds
+import Link from "next/link";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function Home() {
   
@@ -61,219 +64,383 @@ export default function Home() {
   };
 
   return (
-    <Container >
+    <Container maxWidth="lg">
       <Head>
         <title>Flashcard SaaS</title>
         <meta name="description" content="Create flashcards from your text" />
       </Head>
 
-      {/* TITLE BAR */}
-      <AppBar position="static">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Typography variant="h4" color="inherit">
-            Flashcard SaaS
-          </Typography>
-          <Box>
-            <SignedOut>
-              <Button
-                variant="outlined"
-                color="inherit"
-                href="/sign-in"
-                sx={{ mx: 1 }}
-              >
-                Sign In
-              </Button>
-              <Button
-                variant="outlined"
-                color="inherit"
-                href="/sign-up"
-                sx={{ mx: 1 }}
-              >
-                Sign Up
-              </Button>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </Box>
-        </Toolbar>
-      </AppBar>
+      {/* HEADER */}
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Typography variant="h6" sx={{fontWeight: "bold", cursor: "pointer" }}>
+          FlashCards
+        </Typography>
+        <Box>
+          <SignedOut>
+            <Button
+              variant="outlined"
+              color="inherit"
+              href="/sign-in"
+              sx={{ mx: 1, borderRadius: 3 }}
+            >
+              Sign In
+            </Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </Box>
+      </Toolbar>
+      
+      <Divider/>
 
-      {/* MAIN CONTENT */}
+      {/* BIG TITLE SECTION */}
       <Box
         sx={{
           textAlign: "center",
-          my: 6,
-          py: 8,
-          bgcolor: "linear-gradient(to bottom right, #3a7bd5, #3a6073)", // Updated background
-          boxShadow: 3,
-          borderRadius: 2,
+          py: 6,
+          mt: 5
         }}
       >
-        <Typography variant="h2" gutterBottom >
-          Welcome to Flashcard SaaS
+        {/* TITLE and BUTTON */}
+        <Typography variant="h2" gutterBottom align="center">
+          <span style={{ 
+            display: "block", 
+            fontWeight: 700, 
+            fontSize: "4rem", 
+            background: "linear-gradient(to bottom right, #000000, #434343)", // Gradient background
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent", // Make text transparent to show gradient
+            letterSpacing: "0.05em", 
+            marginBottom: "0.5rem",
+            dropShadow: "2px 2px 2px rgba(0, 0, 0, 0.5)" // Slight shadow for depth
+          }}>
+           Flashcards Generator
+          </span>
+          <span style={{ 
+            display: "block", 
+            fontWeight: 700, 
+            fontSize: "4rem", 
+            background: "linear-gradient(to bottom right, #000000, #434343)", // Gradient background
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent", // Make text transparent to show gradient
+            letterSpacing: "0.05em", 
+            marginBottom: "0.5rem",
+            dropShadow: "2px 2px 2px rgba(0, 0, 0, 0.5)" // Slight shadow for depth
+          }}>
+            A Great Learning Platform
+          </span>
         </Typography>
-        <Typography variant="h5" gutterBottom>
-          The easiest way to create flashcards from your text
+
+        <Typography variant="h5" color="textSecondary" gutterBottom sx={{ mt: 2 }}>
+          Transform your text into smart, study-friendly flashcards.
         </Typography>
+
         <Button
           variant="contained"
-          color="secondary"
-          sx={{ mt: 4, mx: 2 }}
+          sx={{ 
+            mt: 4, 
+            mx: 2,  
+            borderRadius: 3,
+            background: "linear-gradient(to bottom right, #000000, #434343)", // Gradient black 
+          }}
           onClick={handleGetStarted}
           size="large"
         >
           Get Started
         </Button>
         <Button
-          variant="contained"
-          color="secondary"
-          sx={{ mt: 4, mx: 2 }}
+          variant="outlined"
+          sx={{ 
+            mt: 4, 
+            mx: 2 ,
+            borderRadius: 3,
+            borderColor: "#000", // Set border color to black
+            color:"#000"
+          }}
           onClick={handleCollections}
           size="large"
         >
-          Collections
+          Explore Collections
         </Button>
       </Box>
 
-      {/* FEATURES */}
-      <Box sx={{ my: 6 }}>
-        <Typography variant="h4" gutterBottom>
-          Features
-        </Typography>
+      
+
+      {/* FEATURES SECTION */}
+      <Box sx={{my: 5}}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Paper
-              elevation={2}
+              elevation={3}
               sx={{
-                p: 3,
-                bgcolor: "#E0FFFF", // Light cyan background
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '100%', // Ensure it takes up the full height of the grid item
+                p: 4,
+                background: "linear-gradient(to bottom right, #000000, #434343)", // Gradient black
+                color: "white", // Text color
+                textAlign: "center",
+                height: "100%",
+                borderRadius: 2,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center"
               }}
             >
               <Typography variant="h6" gutterBottom>
-                Easy Text Input
+                Effortless Input
               </Typography>
-              <Typography color="textSecondary">
-                Simply input your text and let our software do the rest.
-                Creating flashcards has never been easier.
+              <Typography color="rgba(255, 255, 255, 0.7)"> {/* Semi-transparent white */}
+                Enter your text effortlessly and generate flashcards with ease.
               </Typography>
             </Paper>
           </Grid>
 
           <Grid item xs={12} md={4}>
             <Paper
-              elevation={2}
+              elevation={3}
               sx={{
-                p: 3,
-                bgcolor: "#f0f4c3", // Light lime background
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '100%', // Ensure it takes up the full height of the grid item
+                p: 4,
+                background: "linear-gradient(to bottom right, #000000, #434343)", // Gradient black
+                color: "white", // Text color
+                textAlign: "center",
+                height: "100%",
+                borderRadius: 2,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center"
               }}
             >
               <Typography variant="h6" gutterBottom>
-                Smart Flashcards
+                Intelligent Design
               </Typography>
-              <Typography color="textSecondary">
-                Our AI intelligently breaks down your text into concise
-                flashcards, perfect for studying.
+              <Typography color="rgba(255, 255, 255, 0.7)"> {/* Semi-transparent white */}
+                Our AI transforms your text into smart flashcards for effective studying.
               </Typography>
             </Paper>
           </Grid>
 
           <Grid item xs={12} md={4}>
             <Paper
-              elevation={2}
+              elevation={3}
               sx={{
-                p: 3,
-                bgcolor: "#ffe0b2", // Light orange background
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '100%', // Ensure it takes up the full height of the grid item
+                p: 4,
+                background: "linear-gradient(to bottom right, #000000, #434343)", // Gradient black
+                color: "white", // Text color
+                textAlign: "center",
+                height: "100%",
+                borderRadius: 2,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center"
               }}
             >
               <Typography variant="h6" gutterBottom>
                 Accessible Anywhere
               </Typography>
-              <Typography color="textSecondary">
-                Access your flashcards from any device, at any time. Study on
-                the go with ease.
+              <Typography color="rgba(255, 255, 255, 0.7)"> {/* Semi-transparent white */}
+                Study on the go with access from any device, anywhere.
               </Typography>
             </Paper>
           </Grid>
         </Grid>
       </Box>
 
-      {/* PRICING */}
-      <Box sx={{ my: 6, textAlign: "center" }}>
-        <Typography variant="h4" gutterBottom>
-          Pricing
+
+      {/* PRICING SECTION */}
+      <Box sx={{ my: 10, textAlign: "center",}}>
+        <Typography 
+          variant="h4" 
+          gutterBottom 
+          sx={{ 
+            fontWeight: 600, 
+            letterSpacing: "0.02em", // Slightly tighter letter spacing for a refined look
+            color: "#000" // Darker color for the title 
+          }}>
+          Choose Your Plan
         </Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
+        <Typography 
+          variant="h6" 
+          color="textSecondary" 
+          gutterBottom 
+          sx={{ 
+            mb: 5,         
+          }}
+        >
+          Select the plan that suits you best
+        </Typography>
+
+        <Grid container spacing={4} justifyContent="center">
+          {/* Basic Plan */}
+          <Grid item xs={12} sm={6} md={4}>
             <Paper
-              elevation={3}
+              elevation={6}
               sx={{
                 p: 4,
-                borderRadius: 2,
-                bgcolor: "#c5cae9", // Light purple background
+                borderRadius: 3,
+                transition: "transform 0.3s ease", // Subtle hover effect
+                "&:hover": {
+                  transform: "scale(1.05)",
+                }
               }}
             >
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h4" sx={{ fontWeight: 400, mb: 2 }} >
                 Basic
               </Typography>
-              <Typography variant="h6" gutterBottom color="textSecondary">
-                $5 / month
+              <Typography color="textSecondary" gutterBottom sx={{ mb: 4 }}>
+                Essential features with limited storage
               </Typography>
-              <Typography color="textSecondary">
-                Access to basic flashcard features and limited storage.
+              <Typography variant="h4" color="#000" gutterBottom sx={{ mb: 2, fontWeight: "bold"}}>
+                $0 / month
+              </Typography>
+              <Typography color="textSecondary" >
+                50 flashcards only
+              </Typography>
+              <Typography color="textSecondary" sx={{ mb: 3 }}>
+                Basic Study Modes
               </Typography>
               <Button
                 variant="contained"
-                color="primary"
-                sx={{ mt: 3 }}
-                onClick={() => handleCheckout("basic")}
+                sx={{ 
+                  mt: 4, 
+                  background: "#000",
+                  borderColor: "#000",
+                  color: "#fff",
+                  borderRadius: 3,
+                  "&:hover": {
+                    borderColor: "#000",
+                    background: "#333333" // Darker shade on hover
+                  }
+                }}
+                //onClick={() => handleCheckout("basic")}
+                onClick={() => router.push("/sign-up")}
               >
-                Choose Basic
+                Select Basic
               </Button>
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          {/* Pro Plan */}
+          <Grid item xs={12} sm={6} md={4}>
             <Paper
-              elevation={3}
+              elevation={6}
               sx={{
                 p: 4,
-                borderRadius: 2,
-                bgcolor: "#ffccbc", // Light pink background
+                borderRadius: 3,
+                transition: "transform 0.3s ease", // Subtle hover effect
+                "&:hover": {
+                  transform: "scale(1.05)",
+                }
               }}
             >
-              <Typography variant="h5" gutterBottom>
-                Pro
+              <Typography variant="h4" sx={{ fontWeight: 400, mb: 2 }} >
+                Premium
               </Typography>
-              <Typography variant="h6" gutterBottom color="textSecondary">
+              <Typography color="textSecondary" gutterBottom sx={{ mb: 4 }}>
+                Unlock more cool features
+              </Typography>
+              <Typography variant="h4" color="#000" gutterBottom sx={{ mb: 2, fontWeight: "bold"}}>
                 $10 / month
               </Typography>
-              <Typography color="textSecondary">
-                Unlimited flashcards and storage, with priority support.
+              <Typography color="textSecondary" >
+                Unlimited flashcards
+              </Typography>
+              <Typography color="textSecondary" sx={{ mb: 3 }}>
+                Advanced Study Modes
               </Typography>
               <Button
                 variant="contained"
-                color="primary"
-                sx={{ mt: 3 }}
+                sx={{ 
+                  mt: 4, 
+                  background: "#000",
+                  borderColor: "#000",
+                  color: "#fff",
+                  borderRadius: 3,
+                  "&:hover": {
+                    borderColor: "#000",
+                    background: "#333333" // Darker shade on hover
+                  }
+                }}
                 onClick={() => handleCheckout("pro")}
               >
-                Choose Pro
+                Select Pro
               </Button>
             </Paper>
           </Grid>
         </Grid>
+      </Box>
+
+
+
+       {/* FAQ SECTION */}
+       <Box sx={{ my: 10 }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ fontWeight: 600, mb: 4, textAlign: "center" }}
+        >
+          Frequently Asked Questions
+        </Typography>
+        
+        {/* Question 1 */}
+        <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">What is Flashcard Generator?</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              Flashcard Generator is a platform that allows users to convert text into study-friendly flashcards. It helps in organizing and memorizing information effectively.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        
+        {/* Question 2 */}
+        <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">How do I sign up?</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              To sign up, click on the {'"'}Sign In{'"'} button in the top-right corner of the page. If you don{"'"}t have an account, you{"'"}ll be able to create one from there.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        
+        {/* Question 3 */}
+        <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">Can I cancel my subscription?</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              Yes, you can cancel your subscription at any time from your account settings. Your access will continue until the end of the current billing cycle.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        
+        {/* Question 4 */}
+        <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">How do I contact support?</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              You can contact support by clicking on the {'"'}Help{'"'} button located in your account menu. Alternatively, you can email us at support@flashcardgenerator.com.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        
+        {/* Question 5 */}
+        <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">What payment methods are accepted?</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              We accept all major credit cards and debit cards. Payment is processed securely through our payment provider.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </Container>
   );

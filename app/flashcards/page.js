@@ -4,7 +4,8 @@ import { useEffect, useState } from "react"
 import { collection, doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/firebase"
 import { useRouter } from "next/navigation"
-import { Card, CardActionArea, CardContent, Container, Grid, Typography, Box, Toolbar, AppBar, Button } from "@mui/material"
+import { Card, CardActionArea, CardContent, Container, Grid, Typography, Box, Toolbar, AppBar, Button, Divider } from "@mui/material"
+import Link from "next/link"
 
 export default function Flashcards() {
     const { isLoaded, isSignedIn, user } = useUser()
@@ -37,39 +38,38 @@ export default function Flashcards() {
 
     return (
         <Container maxWidth="lg">
-            {/* TITLE BAR */}
-           <AppBar position="static" sx={{ bgcolor: "primary.main", color: "white" }}>
-                <Toolbar sx={{ justifyContent: "space-between"}}>               
-                    <Typography variant="h4">
-                        My Flashcards
-                    </Typography>
-                    <Box>
-                        <SignedOut>
-                            <Button
-                                variant="outlined"
-                                color="inherit"
-                                href="/sign-in"
-                                sx={{ mx: 1 }}
-                            >
-                                Sign In
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                color="inherit"
-                                href="/sign-up"
-                                sx={{ mx: 1 }}
-                            >
-                                Sign Up
-                            </Button>
-                        </SignedOut>
-                        <SignedIn>
-                            <UserButton />
-                        </SignedIn>
-                    </Box>
-                </Toolbar>
-            </AppBar>
+            {/* HEADER */}
+            <Toolbar sx={{ justifyContent: "space-between" }}>
+                <Typography variant="h6" sx={{fontWeight: "bold", cursor: "pointer" }}>
+                    <Link href="../" style={{ textDecoration: "none", color: "inherit" }}> FlashCards</Link>
+                </Typography>
+                <Box>
+                <SignedOut>
+                    <Button
+                    variant="outlined"
+                    color="inherit"
+                    href="/sign-in"
+                    sx={{ mx: 1, borderRadius: 3 }}
+                    >
+                    Sign In
+                    </Button>
+                </SignedOut>
+                <SignedIn>
+                    <UserButton />
+                </SignedIn>
+                </Box>
+            </Toolbar>
+            
+            <Divider/>
 
-            {/* MAIN CONTENT */}
+            <Toolbar>
+                <Typography variant="h5" sx={{fontWeight: "bold"}}>
+                    Your Collections
+                </Typography>
+            </Toolbar>
+            
+
+            {/* MAIN CONTENT - FLASHCARD COLLECTIONS*/}
             <Grid
                 container
                 spacing={3}
@@ -117,7 +117,21 @@ export default function Flashcards() {
                         <Typography variant="h4" color="textSecondary" sx={{ mb: 2 }}>
                             No flashcards available. Start by creating a new flashcard.
                         </Typography>
-                        <Button variant="contained" onClick={() => router.push("/generate")}>
+                        <Button 
+                            variant="contained" 
+                            sx={{                             
+                                background: "#000",
+                                borderColor: "#000",
+                                color: "#fff",
+                                borderRadius: 3,
+                                textTransform: 'none', // Prevents automatic capitalization
+                                "&:hover": {
+                                borderColor: "#000",
+                                background: "#333333" // Darker shade on hover
+                                }
+                            }}
+                            onClick={() => router.push("/generate")}
+                        >
                             Generate
                         </Button>
                     </Box>

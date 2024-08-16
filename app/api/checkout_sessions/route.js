@@ -7,7 +7,10 @@ const formatAmountForStripe = (amount) => {
     return Math.round(amount * 100)
 }
 
+
 export const maxDuration = 60 // This function can run for a maximum of 60 seconds
+
+
 export async function GET(req, {params}) {
     const searchParams = req.nextUrl.searchParams
     const session_id = searchParams.get("session_id")
@@ -21,6 +24,8 @@ export async function GET(req, {params}) {
         return NextResponse.json({error: {message: error.message}}, {status: 500})
     }
 }
+
+
 export async function POST(req) {
     const params = {
         mode: "subscription",
