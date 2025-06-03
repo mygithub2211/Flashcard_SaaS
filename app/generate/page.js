@@ -1,160 +1,160 @@
-"use client"
-import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs"
-import { Box, Button, Card, CardActionArea, CardContent, Container, Divider, Toolbar } from "@mui/material"
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
-import { Paper, TextField, Typography } from "@mui/material"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { db } from "@/firebase"
-import { collection, doc, getDoc, writeBatch } from "firebase/firestore"
-import Slider from "react-slick"
-import "slick-carousel/slick/slick.css"
-import "slick-carousel/slick/slick-theme.css"
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft"
-import ArrowRightIcon from "@mui/icons-material/ArrowRight"
-import Link from "next/link"
+'use client'
+import {SignedIn,SignedOut,UserButton,useUser}from '@clerk/nextjs'
+import {Box,Button,Card,CardActionArea,CardContent,Container,Divider,Toolbar}from '@mui/material'
+import {Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle}from '@mui/material'
+import {Paper,TextField,Typography}from '@mui/material'
+import {useRouter}from 'next/navigation'
+import {useState}from 'react'
+import {db}from '@/firebase'
+import {collection,doc,getDoc,writeBatch}from 'firebase/firestore'
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
+import ArrowRightIcon from '@mui/icons-material/ArrowRight'
+import Link from 'next/link'
 
 
 
 
 // Custom arrow components
-function PrevArrow(props) {
-    const { onClick } = props
+function PrevArrow(props){
+    const {onClick}= props
     return (
         <Box
             onClick={onClick}
             sx={{
-                position: "absolute",
-                top: "50%",
-                left: "-30px",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                zIndex: 1,
+                position:'absolute',
+                top:'50%',
+                left:'-30px',
+                transform:'translateY(-50%)',
+                cursor:'pointer',
+                zIndex:1,
             }}
         >
-            <ArrowLeftIcon fontSize="large" />
+            <ArrowLeftIcon fontSize='large' />
         </Box>
     )
 }
 
-function NextArrow(props) {
-    const { onClick } = props
+function NextArrow(props){
+    const {onClick}= props
     return (
         <Box
             onClick={onClick}
             sx={{
-                position: "absolute",
-                top: "50%",
-                right: "-30px",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                zIndex: 1,
+                position:'absolute',
+                top:'50%',
+                right:'-30px',
+                transform:'translateY(-50%)',
+                cursor:'pointer',
+                zIndex:1,
             }}
         >
-            <ArrowRightIcon fontSize="large" />
+            <ArrowRightIcon fontSize='large' />
         </Box>
     )
 }
 
-export default function Generate() {
-    const {isLoaded, isSignedIn, user} = useUser()
-    const [flashcards, setFlashcards] = useState([])
-    const [flipped, setFlipped] = useState([])
-    const [text, setText] = useState("")
-    const [name, setName] = useState("")
-    const [open, setOpen] = useState(false)
-    const router = useRouter()
+export default function Generate(){
+    const {isLoaded,isSignedIn,user}=useUser()
+    const [flashcards,setFlashcards]=useState([])
+    const [flipped,setFlipped]=useState([])
+    const [text,setText]=useState('')
+    const [name,setName]=useState('')
+    const [open,setOpen]=useState(false)
+    const router=useRouter()
 
-    const handleSubmit = async () => {
-        fetch("api/generate", {
-            method: "POST",
-            body: text,
+    const handleSubmit=async () => {
+        fetch('api/generate',{
+            method:'POST',
+            body:text,
         })
             .then((res) => res.json())
             .then((data) => setFlashcards(data))
     }
 
-    const handleCardClick = (id) => {
+    const handleCardClick=(id) => {
         setFlipped((prev) => ({
             ...prev,
-            [id]: !prev[id]
+            [id]:!prev[id]
         }))
     }
 
-    const handleOpen = () => {
+    const handleOpen=() => {
         setOpen(true)
     }
 
-    const handleClose = () => {
+    const handleClose=() => {
         setOpen(false)
     }
 
-    const saveFlashcards = async () => {
-        if(!name) {
-            alert("Please enter a name")
+    const saveFlashcards=async () => {
+        if(!name){
+            alert('Please enter a name')
             return
         }
         /* IF NOT SIGNED IN */
-        if(!isSignedIn) {
-            router.push("/sign-in")
+        if(!isSignedIn){
+            router.push('/sign-in')
         }
         else{/* IF SIGNED IN */
-            const batch = writeBatch(db)
-            const userDocRef = doc(collection(db, "users"), user.id)
-            const docSnap = await getDoc(userDocRef)
+            const batch=writeBatch(db)
+            const userDocRef=doc(collection(db,'users'),user.id)
+            const docSnap=await getDoc(userDocRef)
     
-            if(docSnap.exists()) {
-                const collections = docSnap.data().flashcards || []
-                if(collections.find((f) => f.name === name)) {
-                    alert("Flashcard collection with the same name already exists.")
+            if(docSnap.exists()){
+                const collections=docSnap.data().flashcards || []
+                if(collections.find((f) => f.name === name)){
+                    alert('Flashcard collection with the same name already exists.')
                     return 
                 }
                 else{
                     collections.push({name})
-                    batch.set(userDocRef, {flashcards: collections}, {merge: true})
+                    batch.set(userDocRef,{flashcards:collections},{merge:true})
                 }
             }
             else{
-                batch.set(userDocRef, {flashcards: [{name}]})
+                batch.set(userDocRef,{flashcards:[{name}]})
             }
     
-            const colRef = collection(userDocRef, name)
+            const colRef=collection(userDocRef,name)
             flashcards.forEach((flashcard) => {
-                const cardDocRef = doc(colRef)
-                batch.set(cardDocRef, flashcard)
+                const cardDocRef=doc(colRef)
+                batch.set(cardDocRef,flashcard)
             })
     
             await batch.commit()
             handleClose()
-            router.push("/flashcards")
+            router.push('/flashcards')
         }
     }
 
-    const settings = {
-        dots: false, // Disabled dots
-        infinite: true,
-        speed: 800,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        prevArrow: <PrevArrow />,
-        nextArrow: <NextArrow />,
+    const settings={
+        dots:false,// Disabled dots
+        infinite:true,
+        speed:800,
+        slidesToShow:3,
+        slidesToScroll:1,
+        prevArrow:<PrevArrow />,
+        nextArrow:<NextArrow />,
     }
 
     return(
         <>
             {/* HEADER */}
-            <Container maxWidth="lg">      
-                <Toolbar sx={{ justifyContent: "space-between" }}>
-                <Typography variant="h6" sx={{fontWeight: "bold", cursor: "pointer" }}>
-                    <Link href="../" style={{ textDecoration: "none", color: "inherit" }}> FlashCards</Link>
+            <Container maxWidth='lg'>      
+                <Toolbar sx={{justifyContent:'space-between' }}>
+                <Typography variant='h6' sx={{fontWeight:'bold',cursor:'pointer' }}>
+                    <Link href='../' style={{textDecoration:'none',color:'inherit' }}> FlashCards</Link>
                 </Typography>
                 <Box>
                     <SignedOut>
                         <Button
-                        variant="outlined"
-                        color="inherit"
-                        href="/sign-in"
-                        sx={{ mx: 1, borderRadius: 3 }}
+                        variant='outlined'
+                        color='inherit'
+                        href='/sign-in'
+                        sx={{mx:1,borderRadius:3 }}
                         >
                         Sign In
                         </Button>
@@ -168,68 +168,68 @@ export default function Generate() {
             </Container>
 
             {/* GENERATE BOX */}
-            <Container maxWidth="md">
+            <Container maxWidth='md'>
                 
                 <Box
                     sx={{
                         mt:4,
                         mb:6,
-                        display:"flex",
-                        flexDirection: "column",
-                        alignItems: "center"
+                        display:'flex',
+                        flexDirection:'column',
+                        alignItems:'center'
                     }}
                 >
-                    <Typography variant="h4">Generate Flashcards</Typography>
-                    <Paper sx={{p:4, width: "100%"}}>
+                    <Typography variant='h4'>Generate Flashcards</Typography>
+                    <Paper sx={{p:4,width:'100%'}}>
                         <TextField 
                             value={text} 
                             onChange={(e) => setText(e.target.value)} 
-                            label="Enter your topic" 
+                            label='Enter your topic' 
                             fullWidth
                             multiline
                             rows={4}
-                            variant="outlined"
+                            variant='outlined'
                             sx={{
-                                mb: 2,
-                                "& .MuiOutlinedInput-root": {
-                                "& fieldset": {
-                                    borderColor: "#ccc", // Default border color
+                                mb:2,
+                                '& .MuiOutlinedInput-root':{
+                                '& fieldset':{
+                                    borderColor:'#ccc',// Default border color
                                 },
-                                "&:hover fieldset": {
-                                    borderColor: "#000", // Border color when hovered
+                                '&:hover fieldset':{
+                                    borderColor:'#000',// Border color when hovered
                                 },
-                                "&.Mui-focused fieldset": {
-                                    borderColor: "#000", // Border color when focused
-                                },
-                                },
-                                "& .MuiInputLabel-root": {
-                                color: "#000", // Label color
-                                "&.Mui-focused": {
-                                    color: "#000", // Label color when focused
+                                '&.Mui-focused fieldset':{
+                                    borderColor:'#000',// Border color when focused
                                 },
                                 },
-                                "& .MuiInputLabel-shrink": {
-                                top: -8, // Adjust label position when floating
-                                left: 0,
-                                color: "#000", // Label color when floating
+                                '& .MuiInputLabel-root':{
+                                color:'#000',// Label color
+                                '&.Mui-focused':{
+                                    color:'#000',// Label color when focused
+                                },
+                                },
+                                '& .MuiInputLabel-shrink':{
+                                top:-8,// Adjust label position when floating
+                                left:0,
+                                color:'#000',// Label color when floating
                                 },
                             }}
-                            /*InputLabelProps={{  //responsible for position of "Enter topic"
-                                shrink: true,  //Ensures label is always in the floating position
+                            /*InputLabelProps={{ //responsible for position of 'Enter topic'
+                                shrink:true, //Ensures label is always in the floating position
                             }}*/
                         />
 
                         <Button
-                            variant="contained" 
-                            sx={{                             
-                                background: "#000",
-                                borderColor: "#000",
-                                color: "#fff",
-                                borderRadius: 3,
-                                textTransform: 'none', // Prevents automatic capitalization
-                                "&:hover": {
-                                borderColor: "#000",
-                                background: "#333333" // Darker shade on hover
+                            variant='contained' 
+                            sx={{                            
+                                background:'#000',
+                                borderColor:'#000',
+                                color:'#fff',
+                                borderRadius:3,
+                                textTransform:'none',// Prevents automatic capitalization
+                                '&:hover':{
+                                borderColor:'#000',
+                                background:'#333333' // Darker shade on hover
                                 }
                             }}
                             onClick={handleSubmit}
@@ -243,10 +243,10 @@ export default function Generate() {
 
                 {/* GENERATE FLASHCARDS */}
                 {flashcards.length > 0 && (
-                    <Box sx={{mt: 4}}>
-                        <Typography variant="h5">Flashcards Preview</Typography>
+                    <Box sx={{mt:4}}>
+                        <Typography variant='h5'>Flashcards Preview</Typography>
                         <Slider {...settings}>
-                            {flashcards.map((flashcard, index) => (
+                            {flashcards.map((flashcard,index) => (
                                 <Box key={index} px={2}>
                                     <Card>
                                         <CardActionArea 
@@ -255,42 +255,42 @@ export default function Generate() {
                                             <CardContent>
                                                 <Box
                                                     sx={{
-                                                        perspective: "1000px",
-                                                        "& > div": {
-                                                            transition: "transform 0.6s",
-                                                            transformStyle: "preserve-3d",
-                                                            position:"relative",
-                                                            width: "100%",
-                                                            height: "200px",
-                                                            boxShadow: "0 4px 8px 0 rgba(0,0,0, 0.2)",
-                                                            transform: flipped[index]
-                                                                ? "rotateY(180deg)" 
-                                                                : "rotateY(0deg)"
+                                                        perspective:'1000px',
+                                                        '& > div':{
+                                                            transition:'transform 0.6s',
+                                                            transformStyle:'preserve-3d',
+                                                            position:'relative',
+                                                            width:'100%',
+                                                            height:'200px',
+                                                            boxShadow:'0 4px 8px 0 rgba(0,0,0,0.2)',
+                                                            transform:flipped[index]
+                                                                ? 'rotateY(180deg)' 
+                                                                :'rotateY(0deg)'
                                                         },
-                                                        "& > div > div": {             
-                                                            position:"absolute",
-                                                            width: "100%",
-                                                            height: "100%",
-                                                            backfaceVisibility: "hidden",
-                                                            display: "flex",
-                                                            justifyContent: "center",
-                                                            alignItems: "center",
-                                                            padding: 2,
-                                                            boxSizing: "border-box"
+                                                        '& > div > div':{            
+                                                            position:'absolute',
+                                                            width:'100%',
+                                                            height:'100%',
+                                                            backfaceVisibility:'hidden',
+                                                            display:'flex',
+                                                            justifyContent:'center',
+                                                            alignItems:'center',
+                                                            padding:2,
+                                                            boxSizing:'border-box'
                                                         },
-                                                        "& > div > div:nth-of-type(2)":{
-                                                            transform: "rotateY(180deg)"
-                                                        }  
+                                                        '& > div > div:nth-of-type(2)':{
+                                                            transform:'rotateY(180deg)'
+                                                        } 
                                                     }}
                                                 >
                                                     <div>
                                                         <div>
-                                                            <Typography varian="h5" component="div">
+                                                            <Typography varian='h5' component='div'>
                                                                 {flashcard.front}
                                                             </Typography>
                                                         </div>
                                                         <div>
-                                                            <Typography varian="h5" component="div">
+                                                            <Typography varian='h5' component='div'>
                                                                 {flashcard.back}
                                                             </Typography>
                                                         </div>
@@ -302,18 +302,18 @@ export default function Generate() {
                                 </Box>
                             ))}
                         </Slider>
-                        <Box sx={{mt: 4, display:"flex", justifyContent: "center", gap: 2}}>
+                        <Box sx={{mt:4,display:'flex',justifyContent:'center',gap:2}}>
                             <Button   
-                                variant="contained" 
-                                sx={{                             
-                                    background: "#000",
-                                    borderColor: "#000",
-                                    color: "#fff",
-                                    borderRadius: 3,
-                                    textTransform: 'none', // Prevents automatic capitalization
-                                    "&:hover": {
-                                    borderColor: "#000",
-                                    background: "#333333" // Darker shade on hover
+                                variant='contained' 
+                                sx={{                            
+                                    background:'#000',
+                                    borderColor:'#000',
+                                    color:'#fff',
+                                    borderRadius:3,
+                                    textTransform:'none',// Prevents automatic capitalization
+                                    '&:hover':{
+                                    borderColor:'#000',
+                                    background:'#333333' // Darker shade on hover
                                     }
                                 }}
                                 onClick={handleOpen}
@@ -321,19 +321,19 @@ export default function Generate() {
                                 Save
                             </Button>
                             <Button
-                                variant="contained" 
-                                sx={{                             
-                                    background: "#000",
-                                    borderColor: "#000",
-                                    color: "#fff",
-                                    borderRadius: 3,
-                                    textTransform: 'none', // Prevents automatic capitalization
-                                    "&:hover": {
-                                    borderColor: "#000",
-                                    background: "#333333" // Darker shade on hover
+                                variant='contained' 
+                                sx={{                            
+                                    background:'#000',
+                                    borderColor:'#000',
+                                    color:'#fff',
+                                    borderRadius:3,
+                                    textTransform:'none',// Prevents automatic capitalization
+                                    '&:hover':{
+                                    borderColor:'#000',
+                                    background:'#333333' // Darker shade on hover
                                     }
                                 }}
-                                href="../"
+                                href='../'
                             >
                                 Cancel
                             </Button>
@@ -349,34 +349,34 @@ export default function Generate() {
                         </DialogContentText>
                         <TextField
                             autoFocus
-                            margin="dense"
-                            label="Collection Name"
+                            margin='dense'
+                            label='Collection Name'
                             fullWidth
                             value={name}
-                            variant="outlined"
+                            variant='outlined'
                             sx={{
-                                mt: 3,
-                                "& .MuiOutlinedInput-root": {
-                                "& fieldset": {
-                                    borderColor: "#ccc", // Default border color
+                                mt:3,
+                                '& .MuiOutlinedInput-root':{
+                                '& fieldset':{
+                                    borderColor:'#ccc',// Default border color
                                 },
-                                "&:hover fieldset": {
-                                    borderColor: "#000", // Border color when hovered
+                                '&:hover fieldset':{
+                                    borderColor:'#000',// Border color when hovered
                                 },
-                                "&.Mui-focused fieldset": {
-                                    borderColor: "#000", // Border color when focused
-                                },
-                                },
-                                "& .MuiInputLabel-root": {
-                                color: "#000", // Label color
-                                "&.Mui-focused": {
-                                    color: "#000", // Label color when focused
+                                '&.Mui-focused fieldset':{
+                                    borderColor:'#000',// Border color when focused
                                 },
                                 },
-                                "& .MuiInputLabel-shrink": {
-                                top: -8, // Adjust label position when floating
-                                left: 0,
-                                color: "#000", // Label color when floating
+                                '& .MuiInputLabel-root':{
+                                color:'#000',// Label color
+                                '&.Mui-focused':{
+                                    color:'#000',// Label color when focused
+                                },
+                                },
+                                '& .MuiInputLabel-shrink':{
+                                top:-8,// Adjust label position when floating
+                                left:0,
+                                color:'#000',// Label color when floating
                                 }
                             }}
                             onChange={(e) => setName(e.target.value)}
@@ -384,16 +384,16 @@ export default function Generate() {
                     </DialogContent>
                     <DialogActions>
                         <Button 
-                            variant="contained" 
-                            sx={{                             
-                                background: "#000",
-                                borderColor: "#000",
-                                color: "#fff",
-                                borderRadius: 3,
-                                textTransform: 'none', // Prevents automatic capitalization
-                                "&:hover": {
-                                borderColor: "#000",
-                                background: "#333333" // Darker shade on hover
+                            variant='contained' 
+                            sx={{                            
+                                background:'#000',
+                                borderColor:'#000',
+                                color:'#fff',
+                                borderRadius:3,
+                                textTransform:'none',// Prevents automatic capitalization
+                                '&:hover':{
+                                borderColor:'#000',
+                                background:'#333333' // Darker shade on hover
                                 }
                             }}
                             onClick={saveFlashcards}
@@ -402,16 +402,16 @@ export default function Generate() {
                         </Button>
 
                         <Button 
-                            variant="contained" 
-                            sx={{                             
-                                background: "#000",
-                                borderColor: "#000",
-                                color: "#fff",
-                                borderRadius: 3,
-                                textTransform: 'none', // Prevents automatic capitalization
-                                "&:hover": {
-                                borderColor: "#000",
-                                background: "#333333" // Darker shade on hover
+                            variant='contained' 
+                            sx={{                            
+                                background:'#000',
+                                borderColor:'#000',
+                                color:'#fff',
+                                borderRadius:3,
+                                textTransform:'none',// Prevents automatic capitalization
+                                '&:hover':{
+                                borderColor:'#000',
+                                background:'#333333' // Darker shade on hover
                                 }
                             }}
                             onClick={handleClose}

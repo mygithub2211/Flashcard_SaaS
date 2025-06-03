@@ -1,23 +1,23 @@
-import { SignedIn, SignedOut, SignUp, UserButton } from "@clerk/nextjs";
-import { AppBar, Box, Button, Container, Toolbar, Typography, Paper, Divider } from "@mui/material";
-import Link from "next/link";
+import {SignedIn,SignedOut,SignUp,UserButton} from '@clerk/nextjs'
+import {Box,Button,Container,Toolbar,Typography,Paper,Divider} from '@mui/material'
+import Link from 'next/link'
 
-export default function SignUpPage() {
+export default function SignUpPage(){
     return (
         <>
             {/* HEADER */}
-            <Container maxWidth="lg">
-                <Toolbar sx={{ justifyContent: "space-between" }}>
-                    <Typography variant="h6" sx={{fontWeight: "bold", cursor: "pointer" }}>
-                        <Link href="../" style={{ textDecoration: "none", color: "inherit" }}> FlashCards</Link>
+            <Container maxWidth='lg'>
+                <Toolbar sx={{justifyContent:'space-between'}}>
+                    <Typography variant='h6' sx={{fontWeight:'bold',cursor:'pointer'}}>
+                        <Link href='../' style={{textDecoration:'none',color:'inherit'}}> FlashCards</Link>
                     </Typography>
                     <Box>
                     <SignedOut>
                         <Button
-                        variant="outlined"
-                        color="inherit"
-                        href="/sign-in"
-                        sx={{ mx: 1, borderRadius: 3 }}
+                        variant='outlined'
+                        color='inherit'
+                        href='/sign-in'
+                        sx={{mx:1,borderRadius:3}}
                         >
                         Sign In
                         </Button>
@@ -29,34 +29,34 @@ export default function SignUpPage() {
                 </Toolbar>
                 <Divider/>
             </Container>
-            <Container maxWidth="sm">
+            <Container maxWidth='sm'>
                 <Paper
                     elevation={3}
                     sx={{
-                        mt: 4,
-                        p: 4,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        backgroundColor: "#f9f9f9",
-                        borderRadius: "8px"
+                        mt:4,
+                        p:4,
+                        display:'flex',
+                        flexDirection:'column',
+                        alignItems:'center',
+                        backgroundColor:'#f9f9f9',
+                        borderRadius:'8px'
                     }}
                 >
                     <Typography 
-                        variant="h4" 
-                        sx={{ 
-                            mb: 2, 
-                            fontWeight: "bold", 
-                            color: "#333" 
+                        variant='h4' 
+                        sx={{
+                            mb:2,
+                            fontWeight:'bold',
+                            color:'#333' 
                         }}
                     >
                         Sign Up
                     </Typography>
                     <SignUp />
-                    <Box sx={{ mt: 2 }}>
-                        <Typography variant="body2" sx={{ color: "#666" }}>
-                            Already have an account?{" "}
-                            <Link href="/sign-in" passHref style={{ color: "#3f51b5", textDecoration: "none" }}>
+                    <Box sx={{mt:2}}>
+                        <Typography variant='body2' sx={{color:'#666'}}>
+                            Already have an account?{' '}
+                            <Link href='/sign-in' passHref style={{color:'#3f51b5',textDecoration:'none'}}>
                                 Sign In
                             </Link>
                         </Typography>
@@ -64,5 +64,5 @@ export default function SignUpPage() {
                 </Paper>
             </Container>
         </>
-    );
+    )
 }
