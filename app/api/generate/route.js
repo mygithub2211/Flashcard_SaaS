@@ -11,7 +11,7 @@ The flashcards should:
 - Include varied types of questions such as multiple-choice, fill-in-the-blank, and true/false.
 - Consider different learning levels, from beginner to advanced.
 
-Remember, only generate 30 flashcards.
+Remember, only generate 50 flashcards.
 Your goal is to assist users in mastering their subject matter through effective repetition and self-testing.
 
 Return in the following JSON format:
