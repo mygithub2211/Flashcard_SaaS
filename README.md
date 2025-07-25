@@ -8,4 +8,5 @@ Description:
 3) Then the user will have the ability to enter the topic to generate Flashcard Set 
 4) They have the ability to check the set before they decide to save that set
 5) If they decide to save the set, the set will be stored in Firebase database
-6) The app uses Stripe API for the payment option. But this option is in Test Mode. It doesn't actually take the payment.
+6) Otherwise, they can regenerate a new set
+7) The app uses Stripe API for the payment option. But this option is in Test Mode. It doesn't actually take the payment.
